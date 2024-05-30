@@ -3,11 +3,15 @@ const dotenv = require("dotenv");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const { logger } = require("./middleware/logger");
+const mongoose = require("mongoose");
+const { logger, logEvents } = require("./middleware/logger");
 const handlerError = require("./middleware/handlerError");
 const corsOptions = require("./config/corsOptions");
+const connectDB = require("./config/connectDB");
 
 dotenv.config();
+connectDB();
+
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -23,6 +27,21 @@ app.use("/", require("./routes/root"));
 app.all("*", require("./handleError/notfound"));
 app.use(handlerError);
 
-app.listen(PORT, () => {
-	console.log(`Server is running on http://localhost:${PORT}`);
+mongoose.connection.once("open", () => {
+	console.log("Connected to DB success!");
+	app.listen(PORT, () => {
+		console.log(`Server is running on http://localhost:${PORT}`);
+	});
+});
+
+mongoose.connection.on("error", (err) => {
+	console.log(err);
+	logEvents(
+		`${err.no}: ${err.code} - ${err.syscall} - ${err.hostname}`,
+		"mongoErrLog.log"
+	);
+});
+
+mongoose.connection.on("disconnect", () => {
+	console.log("Mongoose disconnect from DB");
 });
