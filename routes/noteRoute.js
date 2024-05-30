@@ -8,7 +8,7 @@ const {
 const router = express.Router();
 
 router
-	.use("/")
+	.route("/")
 	.get(getAllNotes)
 	.post(createNewNote)
 	.patch(updateNote)
