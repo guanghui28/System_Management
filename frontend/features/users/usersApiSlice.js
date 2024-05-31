@@ -37,3 +37,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 });
 
 export const { useGetUsersQuery } = usersApiSlice;
+
+// return the query results
+export const selectUsersResult = usersApiSlice.endpoints.getUsers.select();
+
+// creates memoized selector
+const selectUsersData = createSelector(
+	selectUsersResult,
+	(usersResult) => usersResult.data // normalized state object with ids & entities
+);
