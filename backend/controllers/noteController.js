@@ -14,7 +14,7 @@ const getAllNotes = asyncHandler(async (req, res) => {
 		});
 	}
 
-	res.status(200).json({ notes });
+	res.status(200).json(notes);
 });
 
 const createNewNote = asyncHandler(async (req, res) => {

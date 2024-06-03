@@ -10,7 +10,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 		return res.status(200).json({ message: "Have not users yet" });
 	}
 
-	res.status(200).json({ users });
+	res.status(200).json(users);
 });
 
 const createNewUser = asyncHandler(async (req, res) => {
