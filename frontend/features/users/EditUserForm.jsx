@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useDeleteUserMutation, useUpdateUserMutation } from "./usersApiSlice";
 import { useEffect, useState } from "react";
 import { PWD_REGEX, ROLES, USER_REGEX } from "../../src/constants";
-import { FaTrashAlt } from "react-icons/fa";
-import { FaSave } from "react-icons/fa";
+import { FaTrashAlt, FaSave } from "react-icons/fa";
 
 export default function EditUserForm({ user }) {
 	const [updateUser, { isLoading, isSuccess, isError, error }] =
@@ -42,7 +41,7 @@ export default function EditUserForm({ user }) {
 	const onRolesChanged = (e) => {
 		// allow more than one option to be selected
 		const values = Array.from(
-			e.target.selectionOptions, // HTMLCollection
+			e.target.selectedOptions, // HTMLCollection
 			(option) => option.value
 		);
 
@@ -58,7 +57,7 @@ export default function EditUserForm({ user }) {
 		}
 	};
 
-	const onDeleteUserClicked = async (e) => {
+	const onDeleteUserClicked = async () => {
 		await deleteUser({ id: user.id });
 	};
 
@@ -78,7 +77,8 @@ export default function EditUserForm({ user }) {
 
 	const errClass = isError ? "errmsg" : "offscreen";
 	const validUserClass = !validUsername ? "form__input--incomplete" : "";
-	const validPasswordClass = !validPassword ? "form__input--incomplete" : "";
+	const validPasswordClass =
+		password && !validPassword ? "form__input--incomplete" : "";
 	const validRolesClass = !roles.length ? "form__input--incomplete" : "";
 
 	const errContent = (error?.data?.message || delError?.data?.message) ?? "";
@@ -101,8 +101,7 @@ export default function EditUserForm({ user }) {
 						</button>
 						<button
 							className="icon-button"
-							title="Save"
-							disabled={!canSave}
+							title="Delete"
 							onClick={onDeleteUserClicked}
 						>
 							<FaTrashAlt />

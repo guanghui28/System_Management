@@ -3,10 +3,7 @@ const NoteModel = require("../models/NoteModel");
 const asyncHandler = require("../utils/asyncHandler");
 
 const getAllNotes = asyncHandler(async (req, res) => {
-	const notes = await NoteModel.find().populate({
-		path: "user",
-		select: "-password",
-	});
+	const notes = await NoteModel.find();
 
 	if (!notes.length) {
 		return res.status(200).json({
@@ -19,6 +16,7 @@ const getAllNotes = asyncHandler(async (req, res) => {
 
 const createNewNote = asyncHandler(async (req, res) => {
 	const { userId, title, text } = req.body;
+	console.log(req.body);
 
 	if (!userId || !title || !text) {
 		return res.status(400).json({

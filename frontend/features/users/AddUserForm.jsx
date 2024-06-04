@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { useAddNewNoteMutation } from "../notes/notesApiSlice";
 import { useNavigate } from "react-router-dom";
 import { ROLES, USER_REGEX, PWD_REGEX } from "../../src/constants";
 import { FaSave } from "react-icons/fa";
+import { useAddNewUserMutation } from "./usersApiSlice";
 
 export default function AddUserForm() {
 	const [addNewUser, { isLoading, isSuccess, isError, error }] =
-		useAddNewNoteMutation();
+		useAddNewUserMutation();
 
 	const navigate = useNavigate();
 
@@ -38,9 +38,8 @@ export default function AddUserForm() {
 	const onRolesChanged = (e) => {
 		// allow more than one option to be selected
 		const values = Array.from(
-			e.target.selectionOptions, // HTMLCollection
-			(option) => option.value
-		);
+			e.target.selectedOptions // HTMLCollection
+		).map((option) => option.value);
 
 		setRoles(values);
 	};
@@ -64,7 +63,8 @@ export default function AddUserForm() {
 
 	const errClass = isError ? "errmsg" : "offscreen";
 	const validUserClass = !validUsername ? "form__input--incomplete" : "";
-	const validPasswordClass = !validPassword ? "form__input--incomplete" : "";
+	const validPasswordClass =
+		password && !validPassword ? "form__input--incomplete" : "";
 	const validRolesClass = !roles.length ? "form__input--incomplete" : "";
 
 	let content = (
@@ -113,7 +113,7 @@ export default function AddUserForm() {
 					id="roles"
 					name="roles"
 					className={`form__select ${validRolesClass}`}
-					multiple={true}
+					multiple
 					size="3"
 					value={roles}
 					onChange={onRolesChanged}

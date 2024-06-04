@@ -1,11 +1,10 @@
 import { selectNoteById } from "./notesApiSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { BsPencilSquare } from "react-icons/bs";
 
 export default function Note({ noteId }) {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 
 	const note = useSelector((state) => selectNoteById(state, noteId));
 
