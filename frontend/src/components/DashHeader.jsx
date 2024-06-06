@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { USERS_REGEX, DASH_REGEX, NOTES_REGEX } from "../constants";
-import { useSendLogoutMutation } from "../../features/auth/authApiSlice";
+import { useSendLogoutMutation } from "../features/auth/authApiSlice";
 import { useEffect } from "react";
 import { IoLogOut } from "react-icons/io5";
 

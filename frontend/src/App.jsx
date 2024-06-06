@@ -1,17 +1,17 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Public from "./components/Public";
-import Login from "../features/auth/Login";
+import Login from "./features/auth/Login";
 import DashLayout from "./components/DashLayout";
-import Welcome from "../features/auth/Welcome";
-import NotesList from "../features/notes/NotesList";
-import UsersList from "../features/users/UsersList";
+import Welcome from "./features/auth/Welcome";
+import NotesList from "./features/notes/NotesList";
+import UsersList from "./features/users/UsersList";
 
-import EditUser from "../features/users/EditUser";
-import AddUserForm from "../features/users/AddUserForm";
-import Prefetch from "../features/auth/Prefetch";
-import EditNote from "../features/notes/EditNote";
-import NewNote from "../features/notes/NewNote";
+import EditUser from "./features/users/EditUser";
+import AddUserForm from "./features/users/AddUserForm";
+import Prefetch from "./features/auth/Prefetch";
+import EditNote from "./features/notes/EditNote";
+import NewNote from "./features/notes/NewNote";
 
 export default function App() {
 	return (

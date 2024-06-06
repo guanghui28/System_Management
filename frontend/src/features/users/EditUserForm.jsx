@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROLES, USER_REGEX, PWD_REGEX } from "../../src/constants";
-import { FaSave } from "react-icons/fa";
-import { useAddNewUserMutation } from "./usersApiSlice";
+import { useDeleteUserMutation, useUpdateUserMutation } from "./usersApiSlice";
+import { useEffect, useState } from "react";
+import { PWD_REGEX, ROLES, USER_REGEX } from "../../constants";
+import { FaTrashAlt, FaSave } from "react-icons/fa";
 
-export default function AddUserForm() {
-	const [addNewUser, { isLoading, isSuccess, isError, error }] =
-		useAddNewUserMutation();
+export default function EditUserForm({ user }) {
+	const [updateUser, { isLoading, isSuccess, isError, error }] =
+		useUpdateUserMutation();
+	const [deleteUser, { isSuccess: isDelSuccess, error: delError }] =
+		useDeleteUserMutation();
 
 	const navigate = useNavigate();
 
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
+	const [username, setUsername] = useState(user.username);
 	const [validUsername, setValidUsername] = useState(false);
+	const [password, setPassword] = useState("");
 	const [validPassword, setValidPassword] = useState(false);
-	const [roles, setRoles] = useState(["Employee"]);
+	const [roles, setRoles] = useState(user.roles);
+	const [active, setActive] = useState(user.active);
 
 	useEffect(() => {
 		setValidUsername(USER_REGEX.test(username));
@@ -25,34 +28,37 @@ export default function AddUserForm() {
 	}, [password]);
 
 	useEffect(() => {
-		if (isSuccess) {
+		if (isSuccess || isDelSuccess) {
 			setUsername("");
 			setPassword("");
 			setRoles([]);
 			navigate("/dash/users");
 		}
-	}, [isSuccess, navigate]);
+	}, [isSuccess, isDelSuccess, navigate]);
 
 	const onUsernameChanged = (e) => setUsername(e.target.value);
 	const onPasswordChanged = (e) => setPassword(e.target.value);
 	const onRolesChanged = (e) => {
 		// allow more than one option to be selected
 		const values = Array.from(
-			e.target.selectedOptions // HTMLCollection
-		).map((option) => option.value);
+			e.target.selectedOptions, // HTMLCollection
+			(option) => option.value
+		);
 
 		setRoles(values);
 	};
+	const onActiveChanged = () => setActive((prev) => !prev);
 
-	const canSave =
-		[roles.length, validPassword, validUsername].every(Boolean) && !isLoading;
-
-	const onSaveUserClicked = async (e) => {
-		e.preventDefault();
-
-		if (canSave) {
-			await addNewUser({ username, password, roles });
+	const onSaveUserClicked = async () => {
+		if (password) {
+			await updateUser({ id: user.id, username, password, roles, active });
+		} else {
+			await updateUser({ id: user.id, username, roles, active });
 		}
+	};
+
+	const onDeleteUserClicked = async () => {
+		await deleteUser({ id: user.id });
 	};
 
 	const options = Object.values(ROLES).map((role) => (
@@ -61,25 +67,48 @@ export default function AddUserForm() {
 		</option>
 	));
 
+	let canSave;
+	if (password) {
+		canSave =
+			[roles.length, validUsername, validPassword].every(Boolean) && !isLoading;
+	} else {
+		canSave = [roles.length, validUsername].every(Boolean) && !isLoading;
+	}
+
 	const errClass = isError ? "errmsg" : "offscreen";
 	const validUserClass = !validUsername ? "form__input--incomplete" : "";
 	const validPasswordClass =
 		password && !validPassword ? "form__input--incomplete" : "";
 	const validRolesClass = !roles.length ? "form__input--incomplete" : "";
 
-	let content = (
-		<>
-			<p className={errClass}>{error?.data?.message}</p>
+	const errContent = (error?.data?.message || delError?.data?.message) ?? "";
 
-			<form className="form" onSubmit={onSaveUserClicked}>
+	const content = (
+		<>
+			<p className={errClass}>{errContent}</p>
+
+			<form onSubmit={(e) => e.preventDefault()} className="form">
 				<div className="form__title-row">
-					<h2>Add New User</h2>
+					<h2>Edit User</h2>
 					<div className="form__action-buttons">
-						<button className="icon-button" title="Save" disabled={!canSave}>
+						<button
+							className="icon-button"
+							title="Save"
+							disabled={!canSave}
+							onClick={onSaveUserClicked}
+						>
 							<FaSave />
+						</button>
+						<button
+							className="icon-button"
+							title="Delete"
+							onClick={onDeleteUserClicked}
+						>
+							<FaTrashAlt />
 						</button>
 					</div>
 				</div>
+
 				<label htmlFor="username" className="form__label">
 					Username: <span className="nowrap">[3-20 letters]</span>
 				</label>
@@ -106,6 +135,21 @@ export default function AddUserForm() {
 					onChange={onPasswordChanged}
 				/>
 
+				<label
+					htmlFor="user-active"
+					className="form__label form__checkbox-container"
+				>
+					ACTIVE:{" "}
+					<input
+						className="form__checkbox"
+						id="user-active"
+						name="user-active"
+						type="checkbox"
+						checked={active}
+						onChange={onActiveChanged}
+					/>
+				</label>
+
 				<label htmlFor="roles" className="form__label">
 					Assigned Roles:
 				</label>
@@ -113,7 +157,7 @@ export default function AddUserForm() {
 					id="roles"
 					name="roles"
 					className={`form__select ${validRolesClass}`}
-					multiple
+					multiple={true}
 					size="3"
 					value={roles}
 					onChange={onRolesChanged}
