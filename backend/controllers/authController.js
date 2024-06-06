@@ -32,7 +32,7 @@ const login = asyncHandler(async (req, res) => {
 		},
 		process.env.ACCESS_TOKEN_SECRET,
 		{
-			expiresIn: "15s",
+			expiresIn: "15m",
 		}
 	);
 
@@ -42,7 +42,7 @@ const login = asyncHandler(async (req, res) => {
 		},
 		process.env.REFRESH_TOKEN_SECRET,
 		{
-			expiresIn: "20s",
+			expiresIn: "1d",
 		}
 	);
 
@@ -91,7 +91,7 @@ const refresh = (req, res) => {
 				},
 				process.env.ACCESS_TOKEN_SECRET,
 				{
-					expiresIn: "15s",
+					expiresIn: "15m",
 				}
 			);
 
