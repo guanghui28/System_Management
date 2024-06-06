@@ -4,8 +4,10 @@ import { selectAllUsers } from "../users/usersApiSlice";
 
 export default function NewNote() {
 	const users = useSelector(selectAllUsers);
-	console.log(users);
-	const content = users ? <NewNoteForm users={users} /> : <p>Loading...</p>;
+
+	if (!users.length) return <p>Not currently available</p>;
+
+	const content = <NewNoteForm users={users} />;
 
 	return content;
 }
