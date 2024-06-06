@@ -5,8 +5,11 @@ const {
 	updateUser,
 	deleteUser,
 } = require("../controllers/userController");
+const verifyJWT = require("../middleware/verifyJWT");
 
 const router = express.Router();
+
+router.use(verifyJWT);
 
 router
 	.route("/")
