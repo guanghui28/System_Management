@@ -6,6 +6,7 @@ import { IoLogOut } from "react-icons/io5";
 import { FaUserPlus, FaPlusCircle } from "react-icons/fa";
 import { FaUserGear, FaFilePen } from "react-icons/fa6";
 import useAuth from "../hooks/useAuth";
+import PulseLoader from "react-spinners/PulseLoader";
 
 export default function DashHeader() {
 	const { isManager, isAdmin } = useAuth();
@@ -18,7 +19,7 @@ export default function DashHeader() {
 	const handleLogout = async () => {
 		try {
 			await sendLogout().unwrap();
-			console.log("Logout success");
+			navigate("/login");
 		} catch (error) {
 			console.log("Failed to logout: ", error);
 		}
@@ -104,7 +105,7 @@ export default function DashHeader() {
 
 	let buttonContent = null;
 	if (isLoading) {
-		buttonContent = <p>Logging Out...</p>;
+		buttonContent = <PulseLoader color="#fff" />;
 	} else {
 		buttonContent = (
 			<>

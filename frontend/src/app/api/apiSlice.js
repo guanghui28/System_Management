@@ -16,15 +16,15 @@ const baseQuery = fetchBaseQuery({
 });
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
-	console.log(args); // request url, method, body
-	console.log(api); // signal, dispatch, getState()
-	console.log(extraOptions); // custom like {shout: true}
+	//console.log(args); // request url, method, body
+	//console.log(api); // signal, dispatch, getState()
+	//console.log(extraOptions); // custom like {shout: true}
 
 	let result = await baseQuery(args, api, extraOptions);
 
 	// handle status
 	if (result?.error?.status === 403) {
-		console.log("=====SENDING REFRESH TOKEN=====");
+		//console.log("=====SENDING REFRESH TOKEN=====");
 
 		// send refresh token to get new access token
 		const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);

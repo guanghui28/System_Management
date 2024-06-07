@@ -31,15 +31,10 @@ const createNewNote = asyncHandler(async (req, res) => {
 		});
 	}
 
-	const existUser = await UserModel.findById(userId).lean();
-	if (!existUser) {
-		return res.status(400).json({
-			message: "Check userId again!, userId not exist",
-		});
-	}
-
-	const duplicateTitle = await NoteModel.findOne({ title }).lean();
-	if (duplicateTitle) {
+	const duplicate = await NoteModel.findOne({ title })
+		.collation({ locale: "en", strength: 2 })
+		.lean();
+	if (duplicate) {
 		return res.status(409).json({
 			message: "This title has already existed!",
 		});
@@ -79,9 +74,11 @@ const updateNote = asyncHandler(async (req, res) => {
 		});
 	}
 
-	const duplicateTitle = await NoteModel.findOne({ title }).lean();
+	const duplicate = await NoteModel.findOne({ title })
+		.collation({ locale: "en", strength: 2 })
+		.lean();
 
-	if (duplicateTitle && duplicateTitle?._id?.toString() !== id) {
+	if (duplicate && duplicate?._id?.toString() !== id) {
 		return res.status(409).json({
 			message: "This title has already existed",
 		});

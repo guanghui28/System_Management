@@ -1,11 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { selectUserById } from "./usersApiSlice";
-import { useSelector, useDispatch } from "react-redux";
+import { useGetUsersQuery } from "./usersApiSlice";
 import { BsPencilSquare } from "react-icons/bs";
+import { memo } from "react";
 
-export default function User({ userId }) {
-	const dispatch = useDispatch();
-	const user = useSelector((state) => selectUserById(state, userId));
+const User = ({ userId }) => {
+	const { user } = useGetUsersQuery("usersList", {
+		selectFromResult: ({ data }) => ({
+			user: data?.entities[userId],
+		}),
+	});
+
 	const navigate = useNavigate();
 
 	if (!user) {
@@ -27,4 +31,7 @@ export default function User({ userId }) {
 			</td>
 		</tr>
 	);
-}
+};
+
+const memoizedUser = memo(User);
+export default memoizedUser;

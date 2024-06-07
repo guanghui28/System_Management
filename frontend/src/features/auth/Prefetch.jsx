@@ -6,13 +6,12 @@ import { Outlet } from "react-router-dom";
 
 export default function Prefetch() {
 	useEffect(() => {
-		const notes = store.dispatch(notesApiSlice.endpoints.getNotes.initiate());
-		const users = store.dispatch(usersApiSlice.endpoints.getUsers.initiate());
-
-		return () => {
-			users.unsubscribe();
-			notes.unsubscribe();
-		};
+		store.dispatch(
+			notesApiSlice.util.prefetch("getNotes", "notesList", { force: true })
+		);
+		store.dispatch(
+			usersApiSlice.util.prefetch("getUsers", "usersList", { force: true })
+		);
 	}, []);
 
 	return <Outlet />;

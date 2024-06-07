@@ -1,12 +1,17 @@
-import { selectNoteById } from "./notesApiSlice";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { BsPencilSquare } from "react-icons/bs";
 
-export default function Note({ noteId }) {
+import { useGetNotesQuery } from "./notesApiSlice";
+import { memo } from "react";
+
+const Note = ({ noteId }) => {
 	const navigate = useNavigate();
 
-	const note = useSelector((state) => selectNoteById(state, noteId));
+	const { note } = useGetNotesQuery("notesList", {
+		selectFromResult: ({ data }) => ({
+			note: data?.entities[noteId],
+		}),
+	});
 
 	if (!note) return null;
 
@@ -43,4 +48,8 @@ export default function Note({ noteId }) {
 			</td>
 		</tr>
 	);
-}
+};
+
+const memoizedNote = memo(Note);
+
+export default memoizedNote;
