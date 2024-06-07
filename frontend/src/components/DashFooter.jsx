@@ -1,7 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaHouseChimney } from "react-icons/fa6";
+import useAuth from "../hooks/useAuth";
 
 export default function DashFooter() {
+	const { username, status } = useAuth();
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
 	const onGoHomeClicked = () => navigate("/dash");
@@ -17,8 +19,8 @@ export default function DashFooter() {
 					<FaHouseChimney />
 				</button>
 			)}
-			<p>Current user: </p>
-			<p>Status: </p>
+			<p>Current user: {username}</p>
+			<p>Status: {status}</p>
 		</footer>
 	);
 }

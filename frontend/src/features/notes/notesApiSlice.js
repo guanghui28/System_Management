@@ -20,6 +20,7 @@ export const notesApiSlice = apiSlice.injectEndpoints({
 					note.id = note._id;
 					return note;
 				});
+				console.log({ loadedNotes });
 
 				return notesAdapter.setAll(initialState, loadedNotes);
 			},

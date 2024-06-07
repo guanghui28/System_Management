@@ -42,7 +42,7 @@ export default function Login() {
 			} else if (error.status === 401) {
 				setErrMsg("You're unauthorized");
 			} else {
-				setErrMsg(error.data?.message);
+				setErrMsg(error?.data?.message);
 			}
 
 			if (errRef.current) errRef.current.focus();

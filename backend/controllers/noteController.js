@@ -3,7 +3,7 @@ const NoteModel = require("../models/NoteModel");
 const asyncHandler = require("../utils/asyncHandler");
 
 const getAllNotes = asyncHandler(async (req, res) => {
-	const notes = await NoteModel.find();
+	const notes = await NoteModel.find().lean().exec();
 
 	if (!notes.length) {
 		return res.status(200).json({
@@ -11,7 +11,14 @@ const getAllNotes = asyncHandler(async (req, res) => {
 		});
 	}
 
-	res.status(200).json(notes);
+	const notesWithUser = await Promise.all(
+		notes.map(async (note) => {
+			const user = await UserModel.findById(note.user).lean().exec();
+			return { ...note, username: user.username };
+		})
+	);
+
+	res.status(200).json(notesWithUser);
 });
 
 const createNewNote = asyncHandler(async (req, res) => {
