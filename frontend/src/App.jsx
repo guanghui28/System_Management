@@ -19,8 +19,10 @@ import EditUser from "./features/users/EditUser";
 import AddUserForm from "./features/users/AddUserForm";
 import RequireAuth from "./features/auth/RequireAuth";
 import { ROLES } from "./constants";
+import useTitle from "./hooks/useTitle";
 
 export default function App() {
+	useTitle("GuangHui^^");
 	return (
 		<Routes>
 			<Route path="/" element={<Layout />}>
